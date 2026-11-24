@@ -1,0 +1,578 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE LAST TAB</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Creepster&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --red: #a10d18;
+  --white: #d8d2c8;
+  --black: #080707;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+  color: var(--white);
+  cursor: crosshair;
+}
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  position: relative;
+}
+
+/* ABANDONED ROOM */
+.room {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.95), transparent 35%, transparent 65%, rgba(0,0,0,.9)),
+    linear-gradient(0deg, #050404 0%, transparent 40%, rgba(0,0,0,.45)),
+    radial-gradient(ellipse at 50% 30%, #282322 0%, #100e0d 48%, #050505 100%);
+}
+
+.wall {
+  position: absolute;
+  inset: 0 0 24% 0;
+  opacity: .35;
+  background:
+    repeating-linear-gradient(174deg, transparent 0 90px, #000 91px, transparent 93px),
+    repeating-linear-gradient(90deg, transparent 0 230px, rgba(0,0,0,.5) 231px, transparent 233px);
+}
+
+.floor {
+  position: absolute;
+  bottom: 0;
+  height: 27%;
+  width: 100%;
+  background: linear-gradient(180deg, #171312, #030303);
+  clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+  border-top: 2px solid #211a18;
+}
+
+.floor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .2;
+  background: repeating-linear-gradient(90deg, transparent 0 180px, #000 181px 183px);
+}
+
+/* THE DOOR */
+.door-frame {
+  position: absolute;
+  width: 230px;
+  height: 76%;
+  bottom: 23%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #030303;
+  border: 12px solid #171211;
+  box-shadow: 0 0 45px #000, inset 0 0 40px #000;
+}
+
+.door {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.9), transparent 25%),
+    repeating-linear-gradient(0deg, transparent 0 90px, rgba(0,0,0,.4) 91px 93px),
+    #17100f;
+  animation: doorMove 13s ease-in-out infinite;
+  box-shadow: 0 0 20px #000;
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6d4a26;
+  box-shadow: 0 0 9px #a66a2c;
+}
+
+@keyframes doorMove {
+  0%, 75%, 100% { transform: perspective(500px) rotateY(0deg); }
+  82% { transform: perspective(500px) rotateY(-7deg); }
+  87% { transform: perspective(500px) rotateY(0deg); }
+}
+
+/* SOMETHING IN THE DOORWAY */
+.figure {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75px;
+  height: 260px;
+  opacity: .0;
+  animation: appear 13s infinite;
+  filter: blur(2px);
+}
+
+.figure .head {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  width: 48px;
+  height: 58px;
+  border-radius: 48% 48% 40% 40%;
+  background: #020202;
+}
+
+.figure .body {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 78px;
+  height: 190px;
+  background: #020202;
+  clip-path: polygon(25% 0,75% 0,100% 100%,0 100%);
+}
+
+@keyframes appear {
+  0%, 65%, 100% { opacity: 0; }
+  70%, 85% { opacity: .85; }
+  90% { opacity: 0; }
+}
+
+/* LIGHTING */
+.ceiling-light {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(157,135,105,.13), transparent 70%);
+  animation: flicker 7s infinite;
+  pointer-events: none;
+}
+
+@keyframes flicker {
+  0%, 18%, 20%, 22%, 60%, 62%, 100% { opacity: .7; }
+  19%, 21%, 61% { opacity: .08; }
+  80% { opacity: .3; }
+}
+
+/* GRAIN AND VHS */
+.grain {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  opacity: .12;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+  animation: grain .2s steps(2) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(2%,-1%); }
+  50% { transform: translate(-1%,2%); }
+  75% { transform: translate(1%,1%); }
+  100% { transform: translate(-2%,-1%); }
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .15;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    rgba(0,0,0,.4) 1px,
+    transparent 3px
+  );
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse, transparent 25%, rgba(0,0,0,.55) 75%, #000 120%);
+}
+
+/* FLASHLIGHT */
+.flashlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: radial-gradient(
+    circle 190px at var(--x, 50%) var(--y, 50%),
+    transparent 0%,
+    rgba(0,0,0,.18) 45%,
+    rgba(0,0,0,.83) 100%
+  );
+  transition: background .08s;
+}
+
+/* CONTENT */
+.content {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.topline {
+  color: #806d62;
+  font-size: 10px;
+  letter-spacing: 5px;
+  margin-bottom: 24px;
+  opacity: .8;
+}
+
+.title {
+  position: relative;
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(55px, 10vw, 120px);
+  line-height: .9;
+  letter-spacing: -5px;
+  color: #d4c9bc;
+  text-shadow: 0 2px 2px #000, 0 0 25px rgba(150,0,0,.25);
+  animation: titleFlicker 8s infinite;
+}
+
+.title::after {
+  content: "THE LAST TAB";
+  position: absolute;
+  inset: 0;
+  color: #8d1018;
+  opacity: .35;
+  transform: translate(3px, 1px);
+  clip-path: inset(45% 0 35% 0);
+  animation: glitch 4s infinite;
+}
+
+@keyframes titleFlicker {
+  0%, 94%, 96%, 100% { opacity: 1; }
+  95% { opacity: .55; }
+}
+
+@keyframes glitch {
+  0%, 90%, 100% { transform: translate(3px, 1px); }
+  92% { transform: translate(-4px, -1px); }
+  94% { transform: translate(5px, 2px); }
+}
+
+.subtitle {
+  margin-top: 22px;
+  color: #8d8178;
+  font-family: 'Special Elite', cursive;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+.divider {
+  width: 90px;
+  height: 1px;
+  background: #692027;
+  margin: 30px 0;
+  box-shadow: 0 0 12px #8d1018;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 230px;
+}
+
+.menu button {
+  position: relative;
+  background: rgba(8,6,6,.7);
+  border: 1px solid rgba(130,110,100,.25);
+  color: #a99d92;
+  padding: 13px 18px;
+  text-align: left;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.menu button::before {
+  content: ">";
+  color: #8d1018;
+  margin-right: 13px;
+  opacity: 0;
+  transition: .2s;
+}
+
+.menu button:hover {
+  color: #e6d9ce;
+  border-color: #8d252c;
+  background: rgba(70,5,10,.25);
+  transform: translateX(5px);
+  text-shadow: 0 0 9px #8d1018;
+}
+
+.menu button:hover::before { opacity: 1; }
+
+.menu button:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.menu button:disabled:hover {
+  transform: none;
+  background: rgba(8,6,6,.7);
+  border-color: rgba(130,110,100,.25);
+  text-shadow: none;
+}
+
+.menu button:disabled::before { opacity: 0; }
+
+/* FOOTER */
+.footer {
+  position: absolute;
+  bottom: 25px;
+  left: 30px;
+  right: 30px;
+  display: flex;
+  justify-content: space-between;
+  color: #62534c;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.status {
+  color: #84232a;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: .3; }
+}
+
+/* MESSAGE */
+.whisper {
+  position: absolute;
+  z-index: 6;
+  bottom: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Special Elite', cursive;
+  color: #8c282d;
+  font-size: 12px;
+  letter-spacing: 2px;
+  opacity: 0;
+  white-space: nowrap;
+  animation: whisper 13s infinite;
+}
+
+@keyframes whisper {
+  0%, 50%, 100% { opacity: 0; }
+  55%, 75% { opacity: .8; }
+}
+
+/* POPUP */
+.overlay {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  background: rgba(0,0,0,.88);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog {
+  width: min(390px, 90vw);
+  padding: 32px;
+  border: 1px solid #512026;
+  background: #0b0808;
+  box-shadow: 0 0 70px #000;
+  text-align: center;
+}
+
+.dialog h2 {
+  font-family: 'Special Elite', cursive;
+  color: #b4a69a;
+  font-size: 25px;
+  font-weight: normal;
+}
+
+.dialog p {
+  color: #84756b;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.dialog button {
+  margin-top: 18px;
+  padding: 10px 28px;
+  border: 1px solid #70252c;
+  background: transparent;
+  color: #c6b8aa;
+  font-family: inherit;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+.dialog button:hover { background: #351015; }
+
+@media(max-width:600px) {
+  .title { letter-spacing: -3px; }
+  .footer { font-size: 7px; left: 12px; right: 12px; }
+  .door-frame { width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<div class="room">
+  <div class="wall"></div>
+  <div class="ceiling-light"></div>
+
+  <div class="door-frame">
+    <div class="door">
+      <div class="figure">
+        <div class="head"></div>
+        <div class="body"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floor"></div>
+</div>
+
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="flashlight" id="flashlight"></div>
+
+<main class="content">
+  <div class="topline">UNKNOWN SESSION // CONNECTION ESTABLISHED</div>
+
+  <h1 class="title">THE LAST TAB</h1>
+
+  <div class="subtitle">SOME THINGS SHOULD STAY CLOSED.</div>
+
+  <div class="divider"></div>
+
+  <nav class="menu">
+    <button data-action="begin">Begin Game</button>
+    <button data-action="continue" data-requires-save disabled>Continue</button>
+    <button data-action="endings">Endings</button>
+    <button data-action="settings">Settings</button>
+    <button data-action="credits">Credits</button>
+  </nav>
+
+  <div class="whisper">you didn't close the last tab.</div>
+</main>
+
+<div class="footer">
+  <span class="status">● UNKNOWN DEVICE DETECTED</span>
+  <span>LOCAL TIME: <span id="clock">03:17 AM</span></span>
+  <span>BUILD 0.01 // DO NOT LOOK BACK</span>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <h2 id="dialogTitle">Something is wrong.</h2>
+    <p id="dialogText"></p>
+    <button id="closeDialog">CLOSE</button>
+  </div>
+</div>
+
+<script>
+const flashlight = document.getElementById('flashlight');
+const overlay = document.getElementById('overlay');
+const dialogTitle = document.getElementById('dialogTitle');
+const dialogText = document.getElementById('dialogText');
+
+document.addEventListener('mousemove', e => {
+  flashlight.style.setProperty('--x', e.clientX + 'px');
+  flashlight.style.setProperty('--y', e.clientY + 'px');
+});
+
+function showDialog(title, text) {
+  dialogTitle.textContent = title;
+  dialogText.textContent = text;
+  overlay.style.display = 'flex';
+}
+
+document.querySelectorAll('[data-action]').forEach(button => {
+  button.addEventListener('click', () => {
+    const action = button.dataset.action;
+
+    if (action === 'begin') {
+      showDialog(
+        'Before we begin...',
+        'The game is about to start. Some choices cannot be undone. Are you ready?'
+      );
+      document.getElementById('closeDialog').textContent = 'I AM READY';
+      document.getElementById('closeDialog').onclick = () => {
+        overlay.style.display = 'none';
+        // Connect your game start function here.
+        console.log('Start game');
+      };
+    }
+
+    if (action === 'continue') {
+      console.log('Continue game');
+    }
+
+    if (action === 'endings') {
+      showDialog('THE ENDINGS', 'Five possible endings. Two ways out. Three ways to disappear. Your story has not been written yet.');
+    }
+
+    if (action === 'settings') {
+      showDialog('SETTINGS', 'Audio: ON   //   Visual effects: ON   //   Difficulty: UNKNOWN');
+    }
+
+    if (action === 'credits') {
+      showDialog('CREDITS', 'THE LAST TAB\\nA psychological horror experience.\\n\\nSomewhere, someone is still watching.');
+    }
+  });
+});
+
+document.getElementById('closeDialog').addEventListener('click', () => {
+  overlay.style.display = 'none';
+});
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+// Random unsettling screen flicker
+setInterval(() => {
+  if (Math.random() > .82) {
+    document.body.style.filter = 'brightness(.65)';
+    setTimeout(() => document.body.style.filter = 'brightness(1)', 90);
+  }
+}, 2500);
+</script>
+
+</body>
+</html>
+```
