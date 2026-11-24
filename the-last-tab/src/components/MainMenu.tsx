@@ -19,39 +19,42 @@ export default function MainMenu({
 }: Props) {
   const frameRef = useRef<HTMLIFrameElement>(null)
 
-  const handlers: Record<string, () => void> = {
-    begin: onBegin,
-    continue: onContinue,
-    endings: onEndings,
-    settings: onSettings,
-    credits: onCredits,
-  }
-
   const wire = () => {
     const doc = frameRef.current?.contentDocument
-    if (!doc) {
-      console.error('landing.html: cannot access iframe document')
-      return
+    if (!doc) return
+
+    const detect = (el: HTMLElement): string | null => {
+      const explicit = el.dataset.action
+      if (explicit) return explicit
+      const t = (el.textContent || '').toLowerCase()
+      if (t.includes('continue')) return 'continue'
+      if (t.includes('begin') || t.includes('new game') || t.includes('start') || t.includes('play')) return 'begin'
+      if (t.includes('ending')) return 'endings'
+      if (t.includes('setting') || t.includes('option')) return 'settings'
+      if (t.includes('credit')) return 'credits'
+      return null
     }
 
-    doc.querySelectorAll<HTMLElement>('[data-requires-save]').forEach((el) => {
-      el.style.display = hasSave ? '' : 'none'
-    })
-
-    if (hasSave) {
-      const begin = doc.querySelector<HTMLElement>('[data-action="begin"]')
-      if (begin) begin.textContent = 'New Game'
+    const handlers: Record<string, () => void> = {
+      begin: onBegin,
+      continue: onContinue,
+      endings: onEndings,
+      settings: onSettings,
+      credits: onCredits,
     }
 
-    const buttons = doc.querySelectorAll<HTMLElement>('[data-action]')
-    if (buttons.length === 0) {
-      console.warn('landing.html: no [data-action] buttons found')
-    }
-
-    buttons.forEach((el) => {
+    const els = doc.querySelectorAll<HTMLElement>('button, a, [role="button"], .btn, .menu-item')
+    els.forEach((el) => {
+      const action = detect(el)
+      if (!action) return
+      if (action === 'continue' && !hasSave) {
+        el.style.display = 'none'
+        return
+      }
+      if (action === 'begin' && hasSave) el.textContent = 'New Game'
       el.addEventListener('click', (e) => {
         e.preventDefault()
-        handlers[el.dataset.action ?? '']?.()
+        handlers[action]?.()
       })
     })
   }
