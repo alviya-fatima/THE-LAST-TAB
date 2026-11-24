@@ -1,7 +1,7 @@
 import type { Choice, Condition, Effect, EndingId, GameState, Scene } from './types'
 import { ENDING_RULES } from './endings'
 import { initialState, START_SCENE_ID } from './initialState'
-import { SCENES } from '../story'
+import { SCENES } from './story'
 
 const inRange = (v: number, gte?: number, lte?: number) =>
   (gte === undefined || v >= gte) && (lte === undefined || v <= lte)
