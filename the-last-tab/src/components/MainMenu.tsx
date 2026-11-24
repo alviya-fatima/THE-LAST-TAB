@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import landingHtml from '../assets/landing.html?raw'
 
 type Props = {
   hasSave: boolean
@@ -30,7 +29,10 @@ export default function MainMenu({
 
   const wire = () => {
     const doc = frameRef.current?.contentDocument
-    if (!doc) return
+    if (!doc) {
+      console.error('landing.html: cannot access iframe document')
+      return
+    }
 
     doc.querySelectorAll<HTMLElement>('[data-requires-save]').forEach((el) => {
       el.style.display = hasSave ? '' : 'none'
@@ -41,7 +43,12 @@ export default function MainMenu({
       if (begin) begin.textContent = 'New Game'
     }
 
-    doc.querySelectorAll<HTMLElement>('[data-action]').forEach((el) => {
+    const buttons = doc.querySelectorAll<HTMLElement>('[data-action]')
+    if (buttons.length === 0) {
+      console.warn('landing.html: no [data-action] buttons found')
+    }
+
+    buttons.forEach((el) => {
       el.addEventListener('click', (e) => {
         e.preventDefault()
         handlers[el.dataset.action ?? '']?.()
@@ -53,9 +60,17 @@ export default function MainMenu({
     <iframe
       ref={frameRef}
       title="The Last Tab"
-      srcDoc={landingHtml}
+      src="/landing.html"
       onLoad={wire}
-      className="h-full w-full border-0"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        border: 0,
+        display: 'block',
+        background: '#07070a',
+      }}
     />
   )
 }
