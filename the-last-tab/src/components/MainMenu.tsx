@@ -23,18 +23,6 @@ export default function MainMenu({
     const doc = frameRef.current?.contentDocument
     if (!doc) return
 
-    const detect = (el: HTMLElement): string | null => {
-      const explicit = el.dataset.action
-      if (explicit) return explicit
-      const t = (el.textContent || '').toLowerCase()
-      if (t.includes('continue')) return 'continue'
-      if (t.includes('begin') || t.includes('new game') || t.includes('start') || t.includes('play')) return 'begin'
-      if (t.includes('ending')) return 'endings'
-      if (t.includes('setting') || t.includes('option')) return 'settings'
-      if (t.includes('credit')) return 'credits'
-      return null
-    }
-
     const handlers: Record<string, () => void> = {
       begin: onBegin,
       continue: onContinue,
@@ -43,19 +31,30 @@ export default function MainMenu({
       credits: onCredits,
     }
 
-    const els = doc.querySelectorAll<HTMLElement>('button, a, [role="button"], .btn, .menu-item')
-    els.forEach((el) => {
-      const action = detect(el)
-      if (!action) return
-      if (action === 'continue' && !hasSave) {
-        el.style.display = 'none'
-        return
+    doc.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((el) => {
+      const action = el.dataset.action ?? ''
+
+      if (action === 'continue') {
+        if (hasSave) {
+          el.disabled = false
+          el.removeAttribute('disabled')
+        } else {
+          el.disabled = true
+          return
+        }
       }
+
       if (action === 'begin' && hasSave) el.textContent = 'New Game'
-      el.addEventListener('click', (e) => {
-        e.preventDefault()
-        handlers[action]?.()
-      })
+
+      el.addEventListener(
+        'click',
+        (e) => {
+          e.preventDefault()
+          e.stopImmediatePropagation()
+          handlers[action]?.()
+        },
+        true,
+      )
     })
   }
 
