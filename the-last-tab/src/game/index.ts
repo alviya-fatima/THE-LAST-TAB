@@ -1,4 +1,14 @@
-import type { EndingId, Scene } from '../types'
+type EndingId = 'last_message' | 'forgotten' | 'replacement' | 'truth' | 'other_side'
+
+type Scene = {
+  id: string
+  chapter: number
+  mood?: string
+  ending?: EndingId
+  lines: Array<{ who: string; text: string; sfx?: string }>
+  choices?: Array<{ id: string; text: string; next: string; fx?: Array<unknown> }>
+  resolveEnding?: boolean
+}
 
 const endingStub = (id: EndingId): Scene => ({
   id: `ending_${id}`,
